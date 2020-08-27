@@ -5,6 +5,7 @@ import MacController from "./mac-address/MacController";
 import LogController from "./log/LogController";
 
 import {uploadFile} from "./MulterConfig";
+import {Binary} from "./binary/Binary";
 
 const routes = express.Router();
 const binaryController = new BinaryController();
@@ -24,6 +25,18 @@ routes.post('/binary', function (req: Request, res: Response) {
     binaryController.create(req, res);
   })
 });
+routes.get('/binary/:id', (req: Request, res: Response) => {
+  const binaryPromise = binaryController.findOne(req.params.id);
+  binaryPromise
+    .then((binary: Binary) => {
+      const path = __dirname + '/database/local-storage/' + binary.fileName;
 
+      return res.download(path, binary.originalName);
+    })
+    .catch(reason => {
+      console.log(reason)
+      return res.status(400);
+    })
+})
 
 export default routes;

@@ -11,6 +11,20 @@ class BinaryService {
     return response.json(binaryList);
   }
 
+  async findOne(id: string): Promise<Binary> {
+    const result = await db('binary')
+      .where('id', id).first();
+
+    return {
+      id: result.id,
+      version: result.version,
+      fileName: result.filename,
+      originalName: result.originalname,
+      destination: result.destination,
+      size: result.size,
+    };
+  }
+
   async create(request: Request, response: Response) {
 
     const trx = await db.transaction();
@@ -25,10 +39,10 @@ class BinaryService {
       });
       trx.commit();
       return response.status(201).send()
-    }catch (error) {
+    } catch (error) {
       trx.rollback();
       fs.unlink('../database/local-storage/' + request.file.filename, (err => {
-        if(err) {
+        if (err) {
           console.log("erro ao excluir arquivo: " + request.file.filename)
         }
       }));
