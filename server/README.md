@@ -1,7 +1,7 @@
 # API
 
 ## First
-    Install de dependencys
+    Install dependencys
 ### Using npm  
     npm install 
 ### Usin yarn
